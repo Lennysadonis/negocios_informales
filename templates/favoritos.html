@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mis Favoritos{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary">
+            <i class="bi bi-heart-fill text-danger me-2"></i> Mis Favoritos
+        </h1>
+        <p class="lead text-muted">Tus negocios, productos y servicios guardados</p>
+    </div>
+
+    <!-- NEGOCIOS -->
+    {% if favoritos_negocios %}
+    <section class="mb-5">
+        <h3 class="text-primary fw-bold mb-3">
+            <i class="bi bi-shop me-2"></i> Negocios
+        </h3>
+        <div class="row g-4">
+            {% for f in favoritos_negocios %}
+            <div class="col-md-4">
+                <a href="{% url 'negocios:detalle' f.negocio.id %}" class="text-decoration-none">
+                    <div class="card h-100 shadow-sm hover-shadow border-0">
+                        {% if f.negocio.imagen %}
+                            <img src="{{ f.negocio.imagen.url }}" class="card-img-top" style="height: 160px; object-fit: cover;" alt="{{ f.negocio.nombre }}">
+                        {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 160px;">
+                                <i class="bi bi-shop fs-1 text-muted"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title text-dark fw-bold">{{ f.negocio.nombre }}</h6>
+                            <p class="text-muted small">{{ f.negocio.descripcion|truncatechars:70 }}</p>
+                            <div class="d-flex justify-content-between align-items-center mt-auto">
+                                <span class="text-primary small">{{ f.negocio.ciudad }}</span>
+                                {% if f.negocio.total_calificaciones > 0 %}
+                                <span class="text-warning small fw-bold">
+                                    {% with promedio=f.negocio.promedio_calificacion %}
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= promedio|floatformat:0 %}
+                                            <i class="bi bi-star-fill"></i>
+                                        {% elif forloop.counter <= promedio|add:0.5 %}
+                                            <i class="bi bi-star-half"></i>
+                                        {% else %}
+                                            <i class="bi bi-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% endwith %}
+                                    {{ f.negocio.promedio_calificacion|floatformat:1 }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- PRODUCTOS -->
+    {% if favoritos_productos %}
+    <section class="mb-5">
+        <h3 class="text-success fw-bold mb-3">
+            <i class="bi bi-box-seam me-2"></i> Productos
+        </h3>
+        <div class="row g-4">
+            {% for f in favoritos_productos %}
+            <div class="col-md-4">
+                <a href="{% url 'productos:detalle' f.producto.id %}" class="text-decoration-none">
+                    <div class="card h-100 shadow-sm hover-shadow border-0">
+                        {% if f.producto.imagen %}
+                            <img src="{{ f.producto.imagen.url }}" class="card-img-top" style="height: 160px; object-fit: cover;" alt="{{ f.producto.nombre }}">
+                        {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 160px;">
+                                <i class="bi bi-box fs-1 text-muted"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title text-dark fw-bold">{{ f.producto.nombre }}</h6>
+                            <p class="text-success fw-bold fs-5">${{ f.producto.precio }}</p>
+                            <p class="text-muted small">{{ f.producto.ciudad }}</p>
+                            {% if f.producto.total_calificaciones > 0 %}
+                            <div class="d-flex align-items-center gap-1 mt-auto">
+                                <span class="text-warning small fw-bold">
+                                    {% with promedio=f.producto.promedio_calificacion %}
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= promedio|floatformat:0 %}
+                                            <i class="bi bi-star-fill"></i>
+                                        {% elif forloop.counter <= promedio|add:0.5 %}
+                                            <i class="bi bi-star-half"></i>
+                                        {% else %}
+                                            <i class="bi bi-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% endwith %}
+                                    {{ f.producto.promedio_calificacion|floatformat:1 }}
+                                </span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- SERVICIOS -->
+    {% if favoritos_servicios %}
+    <section class="mb-5">
+        <h3 class="text-warning fw-bold mb-3">
+            <i class="bi bi-wrench-adjustable me-2"></i> Servicios
+        </h3>
+        <div class="row g-4">
+            {% for f in favoritos_servicios %}
+            <div class="col-md-4">
+                <a href="{% url 'servicios:detalle' f.servicio.id %}" class="text-decoration-none">
+                    <div class="card h-100 shadow-sm hover-shadow border-0">
+                        {% if f.servicio.imagen %}
+                            <img src="{{ f.servicio.imagen.url }}" class="card-img-top" style="height: 160px; object-fit: cover;" alt="{{ f.servicio.nombre }}">
+                        {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 160px;">
+                                <i class="bi bi-wrench-adjustable fs-1 text-muted"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title text-dark fw-bold">{{ f.servicio.nombre }}</h6>
+                            <p class="text-success fw-bold fs-5">${{ f.servicio.precio }} <small class="text-muted">{{ f.servicio.get_tipo_precio_display }}</small></p>
+                            <p class="text-muted small">{{ f.servicio.ciudad }}</p>
+                            {% if f.servicio.total_calificaciones > 0 %}
+                            <div class="d-flex align-items-center gap-1 mt-auto">
+                                <span class="text-warning small fw-bold">
+                                    {% with promedio=f.servicio.promedio_calificacion %}
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= promedio|floatformat:0 %}
+                                            <i class="bi bi-star-fill"></i>
+                                        {% elif forloop.counter <= promedio|add:0.5 %}
+                                            <i class="bi bi-star-half"></i>
+                                        {% else %}
+                                            <i class="bi bi-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% endwith %}
+                                    {{ f.servicio.promedio_calificacion|floatformat:1 }}
+                                </span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- SIN FAVORITOS -->
+    {% if not favoritos_negocios and not favoritos_productos and not favoritos_servicios %}
+    <div class="text-center py-5">
+        <i class="bi bi-heart fs-1 text-muted"></i>
+        <p class="text-muted mt-3">Aún no tienes favoritos.</p>
+        <a href="{% url 'home:explora' %}" class="btn btn-outline-danger">
+            <i class="bi bi-compass"></i> Explora y guarda lo que te gusta
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

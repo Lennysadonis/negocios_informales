@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Publicar Producto{% endblock %}
+
+{% block styles %}
+<style>
+    .card-header {
+        background: linear-gradient(45deg, #28a745, #1e7e34) !important;
+        color: white !important;
+        font-weight: bold;
+    }
+    .btn-publicar {
+        background: linear-gradient(45deg, #28a745, #1e7e34) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: bold !important;
+        font-size: 1.3rem !important;
+        padding: 16px !important;
+        border-radius: 50px !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4) !important;
+    }
+    .btn-publicar:hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 15px 35px rgba(40, 167, 69, 0.6) !important;
+    }
+    .form-control, .form-select {
+        border-radius: 12px;
+        padding: 12px;
+        font-size: 1.1rem;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #333;
+    }
+    .preview-img {
+        max-height: 150px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0" style="border-radius: 24px; overflow: hidden;">
+                <div class="card-header text-center py-4">
+                    <h2 class="mb-0">Publicar Nuevo Producto</h2>
+                    <p class="mb-0 mt-2 opacity-75">¡Vende tu producto en Nueva Guinea!</p>
+                    <small class="d-block mt-2">Tu WhatsApp ya está en tu perfil</small>
+                </div>
+
+                <div class="card-body p-5">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- NOMBRE -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <span class="text-danger">*</span> {{ form.nombre.label }}
+                            </label>
+                            {{ form.nombre }}
+                            {% if form.nombre.errors %}
+                                <div class="text-danger small mt-1">{{ form.nombre.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- PRECIO + TIPO PRECIO + MONEDA -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <span class="text-danger">*</span> {{ form.precio.label }}
+                                </label>
+                                {{ form.precio }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <span class="text-danger">*</span> {{ form.tipo_precio.label }}
+                                </label>
+                                {{ form.tipo_precio }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">
+                                    <span class="text-danger">*</span> {{ form.moneda.label }}
+                                </label>
+                                {{ form.moneda }}
+                            </div>
+                        </div>
+
+                        <!-- CATEGORÍA + STOCK -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">
+                                    <span class="text-danger">*</span> {{ form.categoria.label }}
+                                </label>
+                                {{ form.categoria }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">{{ form.stock.label }}</label>
+                                {{ form.stock }}
+                            </div>
+                        </div>
+
+                        <!-- NEGOCIO -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <span class="text-danger">*</span> {{ form.negocio.label }}
+                            </label>
+                            {{ form.negocio }}
+                        </div>
+
+                        <!-- DESCRIPCIÓN -->
+                        <div class="mb-4">
+                            <label class="form-label">
+                                <span class="text-danger">*</span> {{ form.descripcion.label }}
+                            </label>
+                            {{ form.descripcion }}
+                        </div>
+
+                        <!-- FOTOS -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Foto Principal</label>
+                                {{ form.imagen_principal }}
+                                <div class="form-text text-muted">Máximo 2MB. JPG, PNG</div>
+                                <img id="preview-principal" class="preview-img mt-2" style="display: none;" alt="Vista previa">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Foto 1</label>
+                                {{ form.imagen_1 }}
+                                <img id="preview-1" class="preview-img mt-2" style="display: none;" alt="Vista previa">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Foto 2</label>
+                                {{ form.imagen_2 }}
+                                <img id="preview-2" class="preview-img mt-2" style="display: none;" alt="Vista previa">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Foto 3</label>
+                                {{ form.imagen_3 }}
+                                <img id="preview-3" class="preview-img mt-2" style="display: none;" alt="Vista previa">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Foto 4</label>
+                                {{ form.imagen_4 }}
+                                <img id="preview-4" class="preview-img mt-2" style="display: none;" alt="Vista previa">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Foto 5</label>
+                                {{ form.imagen_5 }}
+                                <img id="preview-5" class="preview-img mt-2" style="display: none;" alt="Vista previa">
+                            </div>
+                        </div>
+
+                        <!-- INFO WHATSAPP -->
+                        {% if user.perfil.whatsapp %}
+                        <div class="alert alert-success text-center p-3 mb-4 rounded-3">
+                            <i class="fab fa-whatsapp fa-lg me-2"></i>
+                            <strong>Tu WhatsApp:</strong> {{ user.perfil.whatsapp }}
+                            <br><small>Los clientes te contactarán aquí</small>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning text-center p-3 mb-4 rounded-3">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>¡Agrega tu WhatsApp en tu perfil!</strong><br>
+                            <a href="{% url 'usuarios:perfil' %}" class="text-decoration-underline fw-bold">Ir al perfil</a>
+                        </div>
+                        {% endif %}
+
+                        <!-- BOTONES -->
+                        <div class="d-grid gap-3 mt-5">
+                            <button type="submit" class="btn btn-publicar">PUBLICAR PRODUCTO</button>
+                            <a href="{% url 'productos:lista' %}" class="btn btn-outline-danger btn-lg rounded-pill">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // PREVISUALIZACIÓN DE FOTOS
+    const inputs = [
+        '{{ form.imagen_principal.id_for_label }}',
+        '{{ form.imagen_1.id_for_label }}',
+        '{{ form.imagen_2.id_for_label }}',
+        '{{ form.imagen_3.id_for_label }}',
+        '{{ form.imagen_4.id_for_label }}',
+        '{{ form.imagen_5.id_for_label }}'
+    ];
+    inputs.forEach((inputId, index) => {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                const preview = document.getElementById(`preview-${index === 0 ? 'principal' : index}`);
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = '';
+                    preview.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5 fw-bold text-primary">Bienvenido a Negocios Informales</h1>
+
+    <!-- NEGOCIOS DESTACADOS -->
+    <section class="mb-5">
+        <h3 class="text-success fw-bold mb-3">Negocios Destacados</h3>
+        <div class="row">
+            {% for n in destacados_negocios %}
+            <div class="col-md-4 mb-4">
+                <a href="{% url 'negocios:detalle' n.id %}" class="text-decoration-none">
+                    <div class="card h-100 shadow-sm hover-shadow">
+                        {% if n.imagen %}
+                            <img src="{{ n.imagen.url }}" class="card-img-top" style="height: 160px; object-fit: cover;" alt="{{ n.nombre }}">
+                        {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 160px;">
+                                <i class="bi bi-shop fs-1 text-muted"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h6 class="card-title text-dark">{{ n.nombre }}</h6>
+                            <p class="text-muted small">{{ n.ciudad }}</p>
+                            {% if n.categoria %}
+                                <span class="badge bg-primary">{{ n.categoria.nombre }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted">No hay negocios destacados en este momento.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- PRODUCTOS DESTACADOS -->
+    <section class="mb-5">
+        <h3 class="text-success fw-bold mb-3">Productos Destacados</h3>
+        <div class="row">
+            {% for p in destacados_productos %}
+            <div class="col-md-4 mb-4">
+                <a href="{% url 'productos:detalle' p.id %}" class="text-decoration-none">
+                    <div class="card h-100 shadow-sm hover-shadow">
+                        {% if p.imagen %}
+                            <img src="{{ p.imagen.url }}" class="card-img-top" style="height: 160px; object-fit: cover;" alt="{{ p.nombre }}">
+                        {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 160px;">
+                                <i class="bi bi-box-seam fs-1 text-muted"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h6 class="card-title text-dark">{{ p.nombre }}</h6>
+                            <p class="text-success fw-bold">${{ p.precio }}</p>
+                            {% if p.categoria %}
+                                <span class="badge bg-secondary">{{ p.categoria.nombre }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-center text-muted">No hay productos destacados en este momento.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- BOTÓN EXPLORAR TODO -->
+    <div class="text-center mt-5">
+        <a href="{% url 'home:explora' %}" class="btn btn-primary btn-lg px-5 shadow-sm">
+            <i class="bi bi-compass"></i> Explorar Todo
+        </a>
+    </div>
+</div>
+{% endblock %}

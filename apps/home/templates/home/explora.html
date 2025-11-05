@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Explora Todo - Negocios Informales{% endblock %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<section class="bg-light py-5 mb-5 rounded shadow-sm">
+    <div class="container text-center">
+        <h1 class="display-5 fw-bold text-primary mb-3">Explora Todo</h1>
+        <p class="lead text-muted">Negocios, productos y servicios cerca de ti</p>
+    </div>
+</section>
+
+<div class="container">
+    <!-- FILTROS -->
+    <div class="card shadow-sm mb-5 p-4 bg-white rounded">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <input type="text" name="q" class="form-control" placeholder="Buscar..." value="{{ query }}">
+            </div>
+            <div class="col-md-3">
+                <select name="categoria" class="form-select">
+                    <option value="">Todas las categorías</option>
+                    {% for cat in categorias %}
+                    <option value="{{ cat }}" {% if categoria_seleccionada == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="tipo" class="form-select">
+                    <option value="">Todo</option>
+                    <option value="negocio" {% if tipo == 'negocio' %}selected{% endif %}>Negocios</option>
+                    <option value="producto" {% if tipo == 'producto' %}selected{% endif %}>Productos</option>
+                    <option value="servicio" {% if tipo == 'servicio' %}selected{% endif %}>Servicios</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    Buscar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- NEGOCIOS → CARRUSEL -->
+    {% if negocios %}
+    <section class="mb-5">
+        <h3 class="text-primary fw-bold mb-3 d-flex align-items-center">
+            <i class="bi bi-shop me-2"></i> Negocios
+        </h3>
+        {% include 'negocios/_lista.html' with object_list=negocios %}
+    </section>
+    {% endif %}
+
+    <!-- PRODUCTOS → CARRUSEL -->
+    {% if object_list_productos %}
+    <section class="mb-5">
+        <h3 class="text-success fw-bold mb-3 d-flex align-items-center">
+            <i class="bi bi-box-seam me-2"></i> Productos
+        </h3>
+        {% include 'productos/_lista.html' with object_list=object_list_productos %}
+    </section>
+    {% endif %}
+
+    <!-- SERVICIOS → CARRUSEL -->
+    {% if object_list_servicios %}
+    <section class="mb-5">
+        <h3 class="text-warning fw-bold mb-3 d-flex align-items-center  align-items-center">
+            <i class="bi bi-wrench-adjustable me-2"></i> Servicios
+        </h3>
+        {% include 'servicios/_lista.html' with object_list=object_list_servicios %}
+    </section>
+    {% endif %}
+
+    <!-- SIN RESULTADOS -->
+    {% if not negocios and not object_list_productos and not object_list_servicios %}
+    <div class="text-center py-5">
+        <i class="bi bi-emoji-frown fs-1 text-muted"></i>
+        <p class="text-muted mt-3">No se encontraron resultados.</p>
+        <a href="{% url 'home:explora' %}" class="btn btn-outline-primary">Limpiar filtros</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

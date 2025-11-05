@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Chat con {{ other_user }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card shadow-lg" style="max-width: 800px; margin: auto;">
+        <div class="card-header bg-primary text-white d-flex align-items-center">
+            <img src="{% if other_user.perfil.foto %}{{ other_user.perfil.foto.url }}{% else %}{% static 'img/default-user.png' %}{% endif %}"
+                 class="rounded-circle me-3" width="50" height="50">
+            <div>
+                <h5 class="mb-0">{{ other_user.get_full_name|default:other_user.username }}</h5>
+                <small>En línea</small>
+            </div>
+        </div>
+
+        <div class="card-body" id="chat-log" style="height: 60vh; overflow-y: auto; background: #f1f3f5;">
+            <!-- Mensajes aparecerán aquí -->
+        </div>
+
+        <div class="card-footer bg-white p-3">
+            <form id="chat-form" class="d-flex">
+                <input type="text" id="chat-message-input" class="form-control me-2" placeholder="Escribe un mensaje..." autocomplete="off">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-send"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const roomName = "{{ room_name|escapejs }}";
+    const currentUser = "{{ request.user.username|escapejs }}";
+
+    const chatSocket = new WebSocket(
+        'ws://' + window.location.host + '/ws/contacto/' + roomName + '/'
+    );
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const chatLog = document.getElementById('chat-log');
+
+        const div = document.createElement('div');
+        div.className = 'd-flex mb-3 ' + (data.username === currentUser ? 'justify-content-end' : 'justify-content-start');
+
+        div.innerHTML = `
+            <div class="p-3 rounded-3 shadow-sm ${data.username === currentUser ? 'bg-primary text-white' : 'bg-white'}"
+                 style="max-width: 70%;">
+                <small class="fw-bold">${data.username}</small><br>
+                ${data.message}
+            </div>
+        `;
+        chatLog.appendChild(div);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed');
+    };
+
+    document.getElementById('chat-form').onsubmit = function(e) {
+        e.preventDefault();
+        const input = document.getElementById('chat-message-input');
+        const message = input.value.trim();
+        if (message) {
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            input.value = '';
+        }
+    };
+</script>
+{% endblock %}

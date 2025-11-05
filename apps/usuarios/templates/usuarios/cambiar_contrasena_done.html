@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Contraseña Cambiada{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="alert alert-success">
+                <h4>¡Contraseña cambiada con éxito!</h4>
+                <p>Tu nueva contraseña ya está activa.</p>
+                <a href="{% url 'usuarios:perfil' %}" class="btn btn-primary mt-3">Volver al Perfil</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

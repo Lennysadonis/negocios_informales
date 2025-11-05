@@ -1,0 +1,22 @@
+<form action="https://www.pagaditos.com/pasarela/pago/" method="post" id="pagaditos_form">
+    <input type="hidden" name="pg_uid" value="{{ uid }}">
+    <input type="hidden" name="pg_wsk" value="{{ wsk }}">
+    <input type="hidden" name="pg_ern" value="{{ ern }}">
+    <input type="hidden" name="pg_token" value="{{ token }}">
+    <input type="hidden" name="pg_monto" value="{{ monto }}">
+    <input type="hidden" name="pg_descripcion" value="{{ descripcion }}">
+    <input type="hidden" name="pg_url_retorno" value="{{ url_retorno }}">
+    <input type="hidden" name="pg_url_notificacion" value="{{ url_notificacion }}">
+    
+    <div class="text-center">
+        <p><strong>Pagar ${{ monto }}</strong> con Pagaditos</p>
+        <button type="submit" class="btn btn-success btn-lg">
+            Pagar con Tarjeta / Tigo Money
+        </button>
+    </div>
+</form>
+
+<script>
+    // Envía automáticamente
+    document.getElementById('pagaditos_form').submit();
+</script>

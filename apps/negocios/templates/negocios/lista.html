@@ -1,0 +1,80 @@
+<!-- templates/negocios/lista.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Negocios - Nueva Guinea, Nicaragua{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-primary">
+            Negocios Locales
+        </h1>
+        <p class="lead text-muted">Encuentra lo que necesitas en Nueva Guinea</p>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="card shadow-sm mb-5 p-4 bg-white rounded">
+        <form id="filter-form" method="get" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <input type="text" name="q" class="form-control" placeholder="Buscar negocio..." value="{{ query }}">
+            </div>
+            <div class="col-md-3">
+                <select name="ciudad" class="form-select">
+                    <option value="">Todas las ciudades</option>
+                    {% for c in ciudades %}
+                    <option value="{{ c }}" {% if c == ciudad %}selected{% endif %}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="categoria" class="form-select">
+                    <option value="">Todas las categorías</option>
+                    {% for cat in categorias %}
+                    <option value="{{ cat.id }}" {% if cat.id|stringformat:"s" == categoria_id %}selected{% endif %}>{{ cat.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- BOTÓN PUBLICAR -->
+    {% if user.is_authenticated %}
+    <div class="text-end mb-4">
+        <a href="{% url 'negocios:publicar' %}" class="btn btn-success btn-lg shadow">
+            Publica tu Negocio
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- LISTA -->
+    <div id="negocios-container">
+        {% include 'negocios/_lista.html' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('filter-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const params = new URLSearchParams(formData).toString();
+    
+    fetch(`?${params}`, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('negocios-container').innerHTML = data.html;
+        // Actualizar URL sin recargar
+        history.pushState({}, '', `?${params}`);
+    });
+});
+</script>
+{% endblock %}

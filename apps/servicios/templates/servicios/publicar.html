@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Publicar Servicio{% endblock %}
+
+{% block styles %}
+<style>
+    .card-header {
+        background: linear-gradient(45deg, #FFC107, #FFB300) !important;
+        color: white !important;
+        font-weight: bold;
+    }
+    .btn-publicar {
+        background: linear-gradient(45deg, #FFC107, #FFB300) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: bold;
+        font-size: 1.3rem;
+        padding: 14px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(255,193,7,0.4);
+    }
+    .btn-publicar:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(255,193,7,0.6);
+    }
+    .form-control, .form-select {
+        border-radius: 12px;
+        padding: 12px;
+        font-size: 1.1rem;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #333;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0" style="border-radius: 20px; overflow: hidden;">
+                <div class="card-header text-center py-4">
+                    <h4 class="mb-0">
+                        <i class="bi bi-tools me-2"></i> Ofrece tu Servicio
+                    <small class="text-white-50 d-block mt-1">Llena solo lo necesario. Tu WhatsApp ya está en tu perfil.</small>
+                </div>
+                <div class="card-body p-5">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- CAMPOS DEL FORMULARIO (SIN WHATSAPP) -->
+                        {% for field in form %}
+                            {% if field.name != 'whatsapp' %}  <!-- EXCLUIMOS EL CAMPO WHATSAPP -->
+                            <div class="mb-4">
+                                <label class="form-label">
+                                    {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    {{ field.label }}
+                                </label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <small class="text-muted d-block">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in field.errors %}
+                                            {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <!-- INFO WHATSAPP DEL PERFIL -->
+                        {% if user.perfil.whatsapp %}
+                        <div class="alert alert-success text-center p-3 mb-4">
+                            <i class="fab fa-whatsapp fa-lg me-2"></i>
+                            <strong>Tu WhatsApp:</strong> {{ user.perfil.whatsapp }} 
+                            <br><small>Los clientes te contactarán directamente aquí</small>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning text-center p-3 mb-4">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>¡Agrega tu WhatsApp en tu perfil!</strong><br>
+                            <a href="{% url 'usuarios:perfil' %}" class="text-decoration-underline">Ir al perfil</a>
+                        </div>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-publicar w-100">
+                            <i class="bi bi-send-check me-2"></i> PUBLICAR SERVICIO
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

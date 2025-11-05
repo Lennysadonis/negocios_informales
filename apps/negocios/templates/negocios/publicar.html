@@ -1,0 +1,354 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Publicar Negocio - Nueva Guinea{% endblock %}
+
+{% block styles %}
+<style>
+    .card-header {
+        background: linear-gradient(135deg, #007bff, #0056b3) !important;
+        color: white !important;
+        font-weight: bold;
+    }
+    .input-group-text {
+        background-color: #f8f9fa !important;
+        border-right: none !important;
+    }
+    .form-control, .form-select {
+        border-left: none !important;
+        border-radius: 0 12px 12px 0 !important;
+        padding: 12px;
+        font-size: 1.1rem;
+    }
+    .form-control:focus, .form-select:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+        border-color: #007bff !important;
+    }
+    .input-group .form-control, .input-group .form-select {
+        border-radius: 12px 0 0 12px !important;
+    }
+    .btn-publicar {
+        background: linear-gradient(135deg, #28a745, #1e7e34) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: bold !important;
+        font-size: 1.3rem !important;
+        padding: 16px !important;
+        border-radius: 50px !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4) !important;
+    }
+    .btn-publicar:hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 0 15px 35px rgba(40, 167, 69, 0.6) !important;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #333;
+    }
+    .form-text {
+        font-size: 0.9rem;
+    }
+    .preview-img {
+        max-height: 120px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+    }
+    .preview-img:hover {
+        transform: scale(1.05);
+    }
+    .preview-container {
+        position: relative;
+        display: inline-block;
+    }
+    .remove-img {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: rgba(220,53,69,0.9);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        font-size: 0.8rem;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card shadow-lg border-0" style="border-radius: 24px; overflow: hidden;">
+                <div class="card-header text-center py-4">
+                    <h3 class="mb-0">
+                        <i class="bi bi-shop-window me-2"></i> Publica tu Negocio
+                    </h3>
+                    <p class="mb-0 mt-2 opacity-75">¡Conecta con clientes en Nueva Guinea!</p>
+                    <small class="d-block mt-2">Tu WhatsApp ya está en tu perfil</small>
+                </div>
+
+                <div class="card-body p-5">
+                    <!-- MENSAJES -->
+                    {% if messages %}
+                    <div class="mb-4">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data" id="negocio-form">
+                        {% csrf_token %}
+
+                        <!-- NOMBRE -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark">
+                                <span class="text-danger">*</span> Nombre del Negocio
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0">Shop</span>
+                                {{ form.nombre }}
+                            </div>
+                            <div class="form-text text-muted">Ej: Ferretería El Progreso</div>
+                            {% if form.nombre.errors %}
+                                <div class="text-danger small mt-1">{{ form.nombre.errors|join:", " }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- DESCRIPCIÓN -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark">
+                                <span class="text-danger">*</span> Descripción
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0">Text</span>
+                                {{ form.descripcion }}
+                            </div>
+                            <div class="form-text text-muted">¿Qué vendes o haces?</div>
+                        </div>
+
+                        <!-- CATEGORÍA -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark">
+                                <span class="text-danger">*</span> Categoría
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0">Tag</span>
+                                {{ form.categoria }}
+                            </div>
+                        </div>
+
+                        <!-- CIUDAD -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark">
+                                <span class="text-danger">*</span> Ciudad
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0">Location</span>
+                                {{ form.ciudad }}
+                            </div>
+                            <div class="form-text text-muted">Ej: Nueva Guinea</div>
+                        </div>
+
+                        <!-- DIRECCIÓN -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark">Dirección</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0">Map</span>
+                                {{ form.direccion }}
+                            </div>
+                            <div class="form-text text-muted">Ej: Barrio Central, frente al parque</div>
+                        </div>
+
+                        <!-- HORARIO -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-dark">Horario</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0">Clock</span>
+                                {{ form.horario }}
+                            </div>
+                            <div class="form-text text-muted">Ej: Lun-Vie 9AM-5PM, Sáb 9AM-1PM</div>
+                        </div>
+
+                        <!-- REDES SOCIALES -->
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold text-dark">Instagram</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0">Instagram</span>
+                                    {{ form.instagram }}
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="form-label fw-bold text-dark">Facebook</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0">Facebook</span>
+                                    {{ form.facebook }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FOTOS: 6 CAMPOS -->
+                        <hr class="my-5">
+                        <h5 class="text-primary fw-bold mb-3">
+                            <i class="bi bi-camera-fill me-2"></i> Fotos del Negocio (máx 6)
+                        </h5>
+                        <p class="text-muted small mb-4">La primera será la principal. Máximo 2MB por foto.</p>
+
+                        <div class="row g-3">
+                            <!-- FOTO PRINCIPAL -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Foto Principal *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0">1</span>
+                                    {{ form.imagen_principal }}
+                                </div>
+                                <div class="mt-2 text-center">
+                                    <img id="preview-principal" src="" class="preview-img img-fluid" style="display: none;" alt="Principal">
+                                    <p id="no-principal" class="text-muted small mt-1">Sin imagen</p>
+                                </div>
+                            </div>
+
+                            <!-- FOTO 1 -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Foto 2</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0">2</span>
+                                    {{ form.imagen_1 }}
+                                </div>
+                                <div class="mt-2 text-center">
+                                    <img id="preview-1" src="" class="preview-img img-fluid" style="display: none;" alt="Adicional 1">
+                                    <p id="no-1" class="text-muted small mt-1">Sin imagen</p>
+                                </div>
+                            </div>
+
+                            <!-- FOTO 2 -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Foto 3</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0">3</span>
+                                    {{ form.imagen_2 }}
+                                </div>
+                                <div class="mt-2 text-center">
+                                    <img id="preview-2" src="" class="preview-img img-fluid" style="display: none;" alt="Adicional 2">
+                                    <p id="no-2" class="text-muted small mt-1">Sin imagen</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-3">
+                            <!-- FOTO 3 -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Foto 4</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0">4</span>
+                                    {{ form.imagen_3 }}
+                                </div>
+                                <div class="mt-2 text-center">
+                                    <img id="preview-3" src="" class="preview-img img-fluid" style="display: none;" alt="Adicional 3">
+                                    <p id="no-3" class="text-muted small mt-1">Sin imagen</p>
+                                </div>
+                            </div>
+
+                            <!-- FOTO 4 -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Foto 5</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0">5</span>
+                                    {{ form.imagen_4 }}
+                                </div>
+                                <div class="mt-2 text-center">
+                                    <img id="preview-4" src="" class="preview-img img-fluid" style="display: none;" alt="Adicional 4">
+                                    <p id="no-4" class="text-muted small mt-1">Sin imagen</p>
+                                </div>
+                            </div>
+
+                            <!-- FOTO 5 -->
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Foto 6</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0">6</span>
+                                    {{ form.imagen_5 }}
+                                </div>
+                                <div class="mt-2 text-center">
+                                    <img id="preview-5" src="" class="preview-img img-fluid" style="display: none;" alt="Adicional 5">
+                                    <p id="no-5" class="text-muted small mt-1">Sin imagen</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- INFO WHATSAPP -->
+                        {% if user.perfil.whatsapp %}
+                        <div class="alert alert-success text-center p-3 mt-5 rounded-3">
+                            <i class="fab fa-whatsapp fa-lg me-2"></i>
+                            <strong>Tu WhatsApp:</strong> {{ user.perfil.whatsapp }} 
+                            <br><small>Los clientes te contactarán directamente aquí</small>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning text-center p-3 mt-5 rounded-3">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>¡Agrega tu WhatsApp en tu perfil!</strong><br>
+                            <a href="{% url 'usuarios:perfil' %}" class="text-decoration-underline fw-bold">Ir al perfil</a>
+                        </div>
+                        {% endif %}
+
+                        <!-- BOTÓN -->
+                        <div class="d-grid mt-5">
+                            <button type="submit" class="btn btn-publicar">
+                                <i class="bi bi-send-check me-2"></i> PUBLICAR NEGOCIO
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fields = [
+        { input: 'imagen_principal', preview: 'preview-principal', no: 'no-principal' },
+        { input: 'imagen_1', preview: 'preview-1', no: 'no-1' },
+        { input: 'imagen_2', preview: 'preview-2', no: 'no-2' },
+        { input: 'imagen_3', preview: 'preview-3', no: 'no-3' },
+        { input: 'imagen_4', preview: 'preview-4', no: 'no-4' },
+        { input: 'imagen_5', preview: 'preview-5', no: 'no-5' }
+    ];
+
+    fields.forEach(field => {
+        const input = document.getElementById('{{ form.imagen_principal.id_for_label }}'.replace('imagen_principal', field.input));
+        if (!input) return;
+
+        const preview = document.getElementById(field.preview);
+        const noText = document.getElementById(field.no);
+
+        input.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    noText.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+                noText.style.display = 'block';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

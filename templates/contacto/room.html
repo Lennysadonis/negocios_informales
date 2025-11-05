@@ -1,0 +1,32 @@
+<!-- templates/contacto/room.html -->
+{% extends 'base.html' %}
+{% block title %}Chat con {{ other_user }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="mb-4">💬 Chat con <strong>{{ other_user }}</strong></h2>
+    <div id="chat" class="border p-3 mb-3 bg-light" style="height: 500px; overflow-y: scroll;"></div>
+    <div class="input-group">
+        <input type="text" id="message" class="form-control" placeholder="Escribe tu mensaje...">
+        <button id="send" class="btn btn-success">Enviar</button>
+    </div>
+</div>
+
+<script>
+    const roomName = "{{ room_name }}";
+    const chatSocket = new WebSocket('ws://' + window.location.host + '/ws/contacto/' + roomName + '/');
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        document.querySelector('#chat').innerHTML += 
+            `<div class="p-2"><strong>${data.username}:</strong> ${data.message}</div>`;
+        document.querySelector('#chat').scrollTop = document.querySelector('#chat').scrollHeight;
+    };
+
+    document.querySelector('#send').onclick = function() {
+        const input = document.querySelector('#message');
+        chatSocket.send(JSON.stringify({ 'message': input.value }));
+        input.value = '';
+    };
+</script>
+{% endblock %}

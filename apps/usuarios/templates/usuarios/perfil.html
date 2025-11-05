@@ -1,0 +1,367 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mi Perfil - Nueva Guinea{% endblock %}
+
+{% block content %}
+<!-- FULL WIDTH CONTAINER -->
+<div class="container-fluid px-0">
+    <div class="bg-light">
+        <!-- HEADER PERFIL -->
+        <div class="row g-0">
+            <div class="col-12">
+                <div class="p-4 p-md-5">
+                    <div class="row align-items-center">
+                        <!-- FOTO + INFO -->
+                        <div class="col-md-3 text-center text-md-start">
+                            <div class="position-relative d-inline-block">
+                                <img src="{% if user.perfil.foto and user.perfil.foto.url %}{{ user.perfil.foto.url }}{% else %}{% static 'img/default-user.png' %}{% endif %}" 
+                                     class="rounded-circle shadow-lg" 
+                                     width="150" height="150" 
+                                     alt="Foto de perfil" 
+                                     style="object-fit: cover; border: 6px solid white;">
+                            </div>
+                            <div class="mt-3">
+                                <h3 class="fw-bold text-primary mb-0">{{ user.get_full_name|default:user.username }}</h3>
+                                <p class="text-muted mb-0">{{ user.email }}</p>
+                                <p class="text-success small mb-0">
+                                    Nueva Guinea, Nicaragua
+                                </p>
+                                <!-- WHATSAPP EN PERFIL -->
+                                {% if user.perfil.whatsapp %}
+                                <p class="text-success small mb-0">
+                                    <i class="fab fa-whatsapp"></i> {{ user.perfil.whatsapp }}
+                                </p>
+                                {% else %}
+                                <p class="text-danger small mb-0">
+                                    <i class="fab fa-whatsapp"></i> Sin WhatsApp
+                                </p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- FORMULARIO DE EDICIÓN -->
+                        <div class="col-md-9 mt-4 mt-md-0">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="card-body p-4">
+                                    <h5 class="fw-bold text-primary mb-4">
+                                        Editar Perfil
+                                    </h5>
+                                    <form method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+
+                                        <div class="row g-3">
+                                            <!-- USUARIO -->
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold">Usuario</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-white">
+                                                        <i class="bi bi-person"></i>
+                                                    </span>
+                                                    {{ u_form.username }}
+                                                </div>
+                                                {% if u_form.username.errors %}
+                                                    <small class="text-danger">{{ u_form.username.errors.0 }}</small>
+                                                {% endif %}
+                                            </div>
+
+                                            <!-- EMAIL -->
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold">Correo</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-white">
+                                                        <i class="bi bi-envelope"></i>
+                                                    </span>
+                                                    {{ u_form.email }}
+                                                </div>
+                                                {% if u_form.email.errors %}
+                                                    <small class="text-danger">{{ u_form.email.errors.0 }}</small>
+                                                {% endif %}
+                                            </div>
+
+                                            <!-- WHATSAPP CON PREFIJO LIBRE -->
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold">WhatsApp</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-white">
+                                                        <i class="fab fa-whatsapp text-success"></i>
+                                                    </span>
+                                                    <input type="text" 
+                                                           name="whatsapp" 
+                                                           id="id_whatsapp" 
+                                                           value="{% if user.perfil.whatsapp %}{{ user.perfil.whatsapp }}{% endif %}" 
+                                                           class="form-control whatsapp-field" 
+                                                           placeholder="Pon tu número aquí" 
+                                                           maxlength="16" 
+                                                           autocomplete="off">
+                                                </div>
+                                                <small class="text-muted d-block mt-1">
+                                                    <strong>¡OBLIGATORIO!</strong> Ingresa tu número completo con prefijo de país<br>
+                                                    Ej: <code>+50557277494</code>, <code>+50212345678</code>, <code>+15551234567</code>
+                                                </small>
+                                                {% if p_form.whatsapp.errors %}
+                                                    <small class="text-danger d-block">{{ p_form.whatsapp.errors.0 }}</small>
+                                                {% endif %}
+                                            </div>
+
+                                            <!-- TELÉFONO -->
+                                            <div class="col-md-6">
+                                                <label class="form-label fw-semibold">Teléfono</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-white">
+                                                        <i class="bi bi-telephone"></i>
+                                                    </span>
+                                                    {{ p_form.telefono }}
+                                                </div>
+                                                {% if p_form.telefono.errors %}
+                                                    <small class="text-danger">{{ p_form.telefono.errors.0 }}</small>
+                                                {% endif %}
+                                            </div>
+
+                                            <!-- BIO -->
+                                            <div class="col-12">
+                                                <label class="form-label fw-semibold">Biografía</label>
+                                                {{ p_form.bio }}
+                                                {% if p_form.bio.errors %}
+                                                    <small class="text-danger">{{ p_form.bio.errors.0 }}</small>
+                                                {% endif %}
+                                            </div>
+
+                                            <!-- FOTO DE PERFIL -->
+                                            <div class="col-12">
+                                                <label class="form-label fw-semibold">Foto de perfil</label>
+                                                <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-white rounded border">
+                                                    <img src="{% if user.perfil.foto and user.perfil.foto.url %}{{ user.perfil.foto.url }}{% else %}{% static 'img/default-user.png' %}{% endif %}" 
+                                                         class="rounded-circle shadow-sm" width="70" height="70" alt="Foto actual" id="preview-foto">
+                                                    <div>
+                                                        <span id="nombre-actual" class="fw-semibold d-block {% if user.perfil.foto %}text-success{% else %}text-muted{% endif %}">
+                                                            {% if user.perfil.foto %}
+                                                                Actual: {{ user.perfil.foto.name|cut:"perfiles/" }}
+                                                            {% else %}
+                                                                Sin foto subida
+                                                            {% endif %}
+                                                        </span>
+                                                        <small class="text-muted">Deja vacío para mantener</small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex gap-2">
+                                                    <label for="id_foto" class="btn btn-outline-primary px-4">
+                                                        Cambiar Foto
+                                                    </label>
+                                                    <button type="button" class="btn btn-outline-danger px-4" onclick="eliminarFoto()">
+                                                        Eliminar Foto
+                                                    </button>
+                                                </div>
+
+                                                <input type="file" 
+                                                       name="foto" 
+                                                       id="id_foto" 
+                                                       class="d-none" 
+                                                       accept="image/*">
+                                                <input type="hidden" name="foto-clear" id="foto-clear" value="">
+                                                {% if p_form.foto.errors %}
+                                                    <small class="text-danger d-block mt-2">{{ p_form.foto.errors.0 }}</small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        <!-- BOTONES -->
+                                        <div class="mt-4 d-flex flex-wrap gap-2 justify-content-end">
+                                            <a href="{% url 'password_change' %}" 
+                                               class="btn btn-outline-warning px-4">
+                                                Cambiar Contraseña
+                                            </a>
+                                            <button type="submit" class="btn btn-success px-4 shadow">
+                                                Guardar Cambios
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MIS PUBLICACIONES -->
+        <div class="container-fluid px-4 px-md-5 py-4">
+            <h3 class="fw-bold text-primary mb-4">
+                Mis Publicaciones
+            </h3>
+
+            <!-- NEGOCIOS -->
+            <div class="mb-5">
+                <h5 class="text-primary fw-bold mb-3">Negocios</h5>
+                {% if mis_negocios %}
+                <div class="row g-3">
+                    {% for n in mis_negocios %}
+                    <div class="col-md-4 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 hover-lift">
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <div>
+                                    <h6 class="fw-bold mb-1">{{ n.nombre }}</h6>
+                                    <small class="text-muted">{{ n.ciudad }}</small>
+                                </div>
+                                <div class="mt-3 d-flex gap-1">
+                                    <a href="{% url 'negocios:detalle' n.id %}" 
+                                       class="btn btn-sm btn-outline-primary flex-fill">Ver</a>
+                                    <form method="post" action="{% url 'negocios:borrar' n.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger flex-fill" 
+                                                onclick="return confirm('¿Eliminar {{ n.nombre }}?')">
+                                            Borrar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No tienes negocios publicados.</p>
+                {% endif %}
+            </div>
+
+            <!-- SERVICIOS -->
+            <div class="mb-5">
+                <h5 class="text-success fw-bold mb-3">Servicios</h5>
+                {% if mis_servicios %}
+                <div class="row g-3">
+                    {% for s in mis_servicios %}
+                    <div class="col-md-4 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 hover-lift">
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <div>
+                                    <h6 class="fw-bold mb-1">{{ s.nombre }}</h6>
+                                    <small class="text-muted">${{ s.precio }} {{ s.get_tipo_precio_display }}</small>
+                                </div>
+                                <div class="mt-3 d-flex gap-1">
+                                    <a href="{% url 'servicios:detalle' s.id %}" 
+                                       class="btn btn-sm btn-outline-success flex-fill">Ver</a>
+                                    <form method="post" action="{% url 'servicios:borrar' s.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger flex-fill" 
+                                                onclick="return confirm('¿Eliminar {{ s.nombre }}?')">
+                                            Borrar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No tienes servicios publicados.</p>
+                {% endif %}
+            </div>
+
+            <!-- PRODUCTOS -->
+            <div class="mb-5">
+                <h5 class="text-warning fw-bold mb-3">Productos</h5>
+                {% if mis_productos %}
+                <div class="row g-3">
+                    {% for p in mis_productos %}
+                    <div class="col-md-4 col-lg-3">
+                        <div class="card h-100 shadow-sm border-0 hover-lift">
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <div>
+                                    <h6 class="fw-bold mb-1">{{ p.nombre }}</h6>
+                                    <small class="text-muted">${{ p.precio }}</small>
+                                </div>
+                                <div class="mt-3 d-flex gap-1">
+                                    <a href="{% url 'productos:detalle' p.id %}" 
+                                       class="btn btn-sm btn-outline-warning flex-fill">Ver</a>
+                                    <form method="post" action="{% url 'productos:borrar' p.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-sm btn-danger flex-fill" 
+                                                onclick="return confirm('¿Eliminar {{ p.nombre }}?')">
+                                            Borrar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No tienes productos publicados.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .hover-lift {
+        transition: all 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important;
+    }
+    .card {
+        border-radius: 12px;
+    }
+    .input-group-text {
+        background-color: #fff !important;
+        border-right: 0;
+    }
+    .form-control {
+        border-left: 0;
+    }
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25);
+    }
+    .d-none { display: none !important; }
+
+    /* ESTILO WHATSAPP */
+    .whatsapp-field {
+        border: 3px solid #25D366 !important;
+        font-weight: bold;
+        text-align: center;
+        letter-spacing: 1.5px;
+        font-size: 1.1rem;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function eliminarFoto() {
+    const input = document.getElementById('id_foto');
+    const clear = document.getElementById('foto-clear');
+    const img = document.getElementById('preview-foto');
+    const nombre = document.getElementById('nombre-actual');
+
+    input.value = '';
+    clear.value = 'on';
+    img.src = '{% static "img/default-user.png" %}';
+    nombre.textContent = 'Sin foto subida';
+    nombre.className = 'text-muted d-block';
+
+    alert('Foto eliminada. Guarda los cambios para confirmar.');
+}
+
+// VALIDACIÓN EN VIVO (OPCIONAL)
+document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('id_whatsapp');
+    input.addEventListener('input', function () {
+        let val = this.value.trim();
+        if (val && !val.startsWith('+')) {
+            this.setCustomValidity('Debe comenzar con +');
+        } else if (val && !/^\+\d+$/.test(val)) {
+            this.setCustomValidity('Solo números después del +');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+});
+</script>
+{% endblock %}

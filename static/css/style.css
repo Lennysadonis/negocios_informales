@@ -1,0 +1,16 @@
+.jumbotron {
+    border-radius: 15px;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.bi {
+    font-size: 3rem;
+}
